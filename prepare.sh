@@ -44,10 +44,6 @@ modules=(
 )
 themes=(bootstrap-7.x-3.0.tar.gz  touch-7.x-1.7.tar.gz)
 
-mkdir -p ${DRUPAL_DIR}/modules
-mkdir -p ${DRUPAL_DIR}/themes
-mkdir -p ${DRUPAL_DIR}/libraries
-
 cd ${DRUPAL_DIR}
 wget -c -N http://ftp.drupal.org/files/projects/drupal-7.24.tar.gz
 
