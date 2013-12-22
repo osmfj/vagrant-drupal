@@ -29,6 +29,16 @@ define drupal_module_add ($moduleName = $title ) {
   }
 }
 
+define drupal_library_add ($libName = $title ) {
+  exec { "install_library_${libName}":
+    cwd => "/opt/drupal7/sites/all/libraries",
+    command => "tar xzvf /vagrant/files/drupal/libraries/${libName}.tar.gz",
+    creates => "/opt/drupal7/sites/all/libraries/${libName}",
+    subscribe => File["/opt/drupal7/sites/all/libraries"],
+    refreshonly => true,
+  }
+}
+
 class repo {
   file {
       '/home/vagrant/.gnupg/':
@@ -42,8 +52,8 @@ class repo {
 #  apt::conf {
 #    'apt-cacher':
 #      content => 'Acquire::http::Proxy "http://192.168.123.1:3142";',
-#      ensure => present,
-# }
+#	ensure => present,
+ #}
 
   apt::ppa {
     'miurahr':
@@ -153,6 +163,12 @@ class osm_drupal {
     subscribe => Exec["untar-drupal-dist"]
   }
 
+
+  file {"/opt/drupal7/sites/all/libraries":
+    ensure => directory,
+    subscribe => Exec["untar-drupal-dist"]
+  }
+
   file { "/opt/drupal-$version.tar.gz":
     source => "/vagrant/files/drupal/drupal-$version.tar.gz",
     alias  => "drupal-dist-tgz",
@@ -225,6 +241,10 @@ class osm_drupal {
 # Search development
   drupal_module_add{"search_api": }
   drupal_module_add{"site_map": }
+
+# library
+  drupal_library_add{"leaflet-0.7.1":}
+  drupal_library_add{"facebook-php-sdk-3.2.3":}
 }
 
 node default {
