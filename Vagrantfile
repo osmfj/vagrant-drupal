@@ -6,8 +6,7 @@ Vagrant.configure("2") do |config|
   config.vm.box     = "precise64"
   
   config.vm.provider :kvm do |kvm,override|
-      # nothing to configure
-      # kvm.ui = true  #enable vnc console
+      kvm.gui = true
   end
 
   config.vm.provider :aws do |aws,override|

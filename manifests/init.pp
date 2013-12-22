@@ -78,17 +78,16 @@ C9qKFcK2WALZITNiwqKIsd8ravYPBgRA/sZYAypXzLo3LP0ssv8qRVD9woL3Kh3o
 }
 
 class drupal {
+
+  $version = "7.24"
+
   $dependency = [
     "php5-fpm","php5-gd","mysql-server","php5-mysql","exim4-daemon-light",
     "mysql-client","php5-dev","mysql-server-mroonga","nginx"]
+
   package {
     $dependency:
      ensure  => "installed",
-  }
-  package {
-    "drupal7":
-      require   => Package[$dependency],
-      ensure    => latest;
   }
 
   service {
@@ -99,12 +98,36 @@ class drupal {
       enable    => true
   }
 
+  file { [ "/opt/drupal7/sites/all/modules" ]:
+    ensure => directory,
+    subscribe => Exec["untar-drupal-dist"]
+  }
+
+  file { "/opt/drupal-$version.tar.gz":
+    source => "/vagrant/files/drupal-$version.tar.gz",
+    alias  => "drupal-dist-tgz",
+    before => Exec["untar-drupal-dist"]
+  }
+
+  exec { "tar xf drupal-$version.tar.gz":
+        cwd       => "/opt",
+        creates   => "/opt/drupal-7.24",
+        alias     => "untar-drupal-dist",
+        subscribe => File["drupal-dist-tgz"]
+  }
+
+  file { '/opt/drupal7':
+    ensure => link,
+    target => "/opt/drupal-$version",
+    subscribe => Exec["untar-drupal-dist"]
+    }
+
     file {
       '/etc/nginx/sites-available/drupal':
         ensure => file,
         owner => root,
         group => root,
-        require => Package["drupal7"],
+        subscribe => Exec["untar-drupal-dist"],
         source => '/vagrant/files/drupal-nginx.conf';
       '/etc/nginx/sites-enabled/drupal':
         ensure => 'link',
@@ -121,6 +144,21 @@ class drupal {
       enable => true
   }
 }
+
+class drupal::drush {
+
+  exec { "install-drush":
+    cwd => "/opt/drupal7/sites/all/modules",
+    command => "/bin/tar xvzf /vagrant/files/drupal/modules/drush-6.2.0.tar.gz",
+    creates => "/opt/drupal7/sites/all/modules/drush",
+    require => File["/opt/drupal7/sites/all/modules"],
+  }
+
+  file { "/usr/local/bin/drush":
+    ensure => "/opt/drupal7/sites/all/modules/drush/drush",
+  }
+}
+
 
 node default {
   class { 'repo': stage => pre }
