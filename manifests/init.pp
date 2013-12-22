@@ -104,7 +104,7 @@ class drupal {
   }
 
   file { "/opt/drupal-$version.tar.gz":
-    source => "/vagrant/files/drupal-$version.tar.gz",
+    source => "/vagrant/files/drupal/drupal-$version.tar.gz",
     alias  => "drupal-dist-tgz",
     before => Exec["untar-drupal-dist"]
   }
@@ -143,22 +143,20 @@ class drupal {
       subscribe => File['/etc/nginx/sites-enabled/drupal'],
       enable => true
   }
-}
-
-class drupal::drush {
 
   exec { "install-drush":
     cwd => "/opt/drupal7/sites/all/modules",
     command => "/bin/tar xvzf /vagrant/files/drupal/modules/drush-6.2.0.tar.gz",
-    creates => "/opt/drupal7/sites/all/modules/drush",
+    creates => "/opt/drupal7/sites/all/modules/drush-6.20",
     require => File["/opt/drupal7/sites/all/modules"],
+    before => File["link-drush-bin"]
   }
 
   file { "/usr/local/bin/drush":
     ensure => "/opt/drupal7/sites/all/modules/drush/drush",
+    alias  => "link-drush-bin",
   }
 }
-
 
 node default {
   class { 'repo': stage => pre }
