@@ -1,4 +1,4 @@
-Vagrant recipe for development Drupal Groonga integration
+Vagrant recipe for development OpenStreetMap Drupal site
 =====================================================
 
 Copyright 2013, Hiroshi Miura <miurahr@linux.com>
