@@ -3,6 +3,7 @@
 ROOT=`pwd`
 DRUPAL_DIR=$ROOT/files/drupal
 modules=(
+  admin_menu-7.x-3.0-rc4.tar.gz \
   antispam-7.x-1.5.tar.gz \
   boost-7.x-1.0-beta2.tar.gz \
   captcha-7.x-1.0.tar.gz \

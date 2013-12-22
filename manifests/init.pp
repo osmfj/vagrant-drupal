@@ -3,6 +3,32 @@ Exec { path => [ "/bin/", "/sbin/" , "/usr/bin/", "/usr/sbin/" ] }
 stage { 'pkg' : before => Stage['main'] }
 stage { 'pre' : before => Stage['pkg'] }
 
+define drupal_drush_add ($target = $title){
+  exec { "install-drush-${target}":
+    cwd => "/opt/drupal7/sites/all/modules",
+    command => "/bin/tar xvzf /vagrant/files/drupal/modules/${target}.tar.gz",
+    creates => "/opt/drupal7/sites/all/modules/${target}",
+    require => File["/opt/drupal7/sites/all/modules"],
+    before => File["link-drush-bin"]
+  }
+
+  file { "/usr/local/bin/drush":
+    ensure => "/opt/drupal7/sites/all/modules/${target}/drush",
+    alias  => "link-drush-bin",
+  }
+}
+
+define drupal_module_add ($moduleName = $title ) {
+  exec { "install_module_${moduleName}":
+    cwd => "/opt/drupal7/sites/all/modules",
+    command => "tar xzvf /vagrant/files/drupal/modules/${moduleName}-*.tar.gz",
+    creates => "/opt/drupal7/sites/all/modules/${moduleName}",
+    subscribe => Exec["untar-drupal-dist"],
+    require => File["/opt/drupal7/sites/all/modules"],
+    refreshonly => true,
+  }
+}
+
 class repo {
   file {
       '/home/vagrant/.gnupg/':
@@ -77,7 +103,31 @@ C9qKFcK2WALZITNiwqKIsd8ravYPBgRA/sZYAypXzLo3LP0ssv8qRVD9woL3Kh3o
 
 }
 
-class drupal {
+class osm_nginx {
+    file {
+      '/etc/nginx/sites-available/drupal':
+        ensure => file,
+        owner => root,
+        group => root,
+        subscribe => Exec["untar-drupal-dist"],
+        source => '/vagrant/files/drupal-nginx.conf';
+      '/etc/nginx/sites-enabled/drupal':
+        ensure => 'link',
+        require => Service["php5-fpm"],
+        notify  => Service["nginx"], 
+        target => '/etc/nginx/sites-available/drupal';
+    }
+
+  service {
+    "nginx":
+      name  => nginx,
+      ensure => running,
+      subscribe => File['/etc/nginx/sites-enabled/drupal'],
+      enable => true
+  }
+}
+
+class osm_drupal {
 
   $version = "7.24"
 
@@ -98,7 +148,7 @@ class drupal {
       enable    => true
   }
 
-  file { [ "/opt/drupal7/sites/all/modules" ]:
+  file {"/opt/drupal7/sites/all/modules":
     ensure => directory,
     subscribe => Exec["untar-drupal-dist"]
   }
@@ -122,43 +172,63 @@ class drupal {
     subscribe => Exec["untar-drupal-dist"]
     }
 
-    file {
-      '/etc/nginx/sites-available/drupal':
-        ensure => file,
-        owner => root,
-        group => root,
-        subscribe => Exec["untar-drupal-dist"],
-        source => '/vagrant/files/drupal-nginx.conf';
-      '/etc/nginx/sites-enabled/drupal':
-        ensure => 'link',
-        require => Service["php5-fpm"],
-        notify  => Service["nginx"], 
-        target => '/etc/nginx/sites-available/drupal';
-    }
+  drupal_drush_add{"drush-6.2.0": }
 
-  service {
-    "nginx":
-      name  => nginx,
-      ensure => running,
-      subscribe => File['/etc/nginx/sites-enabled/drupal'],
-      enable => true
-  }
+# basic modules
+  drupal_module_add{"libraries": }
+  drupal_module_add{"boost": }
+  drupal_module_add{"cck": }
+  drupal_module_add{"ctools": }
+  drupal_module_add{"views": }
+  drupal_module_add{"date": }
+  drupal_module_add{"entity": }
+  drupal_module_add{"i18n": }
+  drupal_module_add{"jquery_update": }
+  drupal_module_add{"token": }
+  drupal_module_add{"variable": }
 
-  exec { "install-drush":
-    cwd => "/opt/drupal7/sites/all/modules",
-    command => "/bin/tar xvzf /vagrant/files/drupal/modules/drush-6.2.0.tar.gz",
-    creates => "/opt/drupal7/sites/all/modules/drush-6.20",
-    require => File["/opt/drupal7/sites/all/modules"],
-    before => File["link-drush-bin"]
-  }
+# administration/antispam
+  drupal_module_add{"admin_menu": }
+  drupal_module_add{"antispam": }
+  drupal_module_add{"captcha": }
+  drupal_module_add{"hidden_captcha": }
+  drupal_module_add{"recaptcha": }
+  drupal_module_add{"google_analytics": }
+  drupal_module_add{"pathauto": }
 
-  file { "/usr/local/bin/drush":
-    ensure => "/opt/drupal7/sites/all/modules/drush/drush",
-    alias  => "link-drush-bin",
-  }
+# UI improvement
+  drupal_module_add{"ckeditor": }
+  drupal_module_add{"dhtml_menu": }
+  drupal_module_add{"diff": }
+  drupal_module_add{"message": }
+
+# Q&A forum
+  drupal_module_add{"rate": }
+  drupal_module_add{"votingapi": }
+
+# GEO
+  drupal_module_add{"geofield": }
+  drupal_module_add{"geophp": }
+  drupal_module_add{"leaflet": }
+  drupal_module_add{"openlayers": }
+  drupal_module_add{"proj4js": }
+  drupal_module_add{"panels": }
+
+# SignOn
+  drupal_module_add{"fbconnect": }
+  drupal_module_add{"oauth": }
+  drupal_module_add{"httprl": }
+  drupal_module_add{"profile2": }
+  drupal_module_add{"twitter": }
+
+
+# Search development
+  drupal_module_add{"search_api": }
+  drupal_module_add{"site_map": }
 }
 
 node default {
   class { 'repo': stage => pre }
-  class { 'drupal': }
+  class { 'osm_drupal': }
+  class { 'osm_nginx': }
 }
