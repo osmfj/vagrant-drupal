@@ -153,8 +153,8 @@ class osm_drupal {
   $version = "7.24"
 
   $dependency = [
-    "php5-fpm","php5-gd","mysql-server","php5-mysql","exim4-daemon-light",
-    "mysql-client","php5-dev","mysql-server-mroonga","nginx"]
+    "php5-fpm","php5-gd","php5-mysql","exim4-daemon-light",
+    "php5-dev","mysql-server-mroonga","nginx"]
 
   package {
     $dependency:
@@ -266,8 +266,38 @@ class osm_drupal {
   drupal_theme_add{"bootstrap":}
 }
 
+class osm_mysql {
+  include '::mysql::server'
+
+#  mysql_user { 'drupal7@localhost':
+#    ensure                   => 'present',
+#    password_hash            => '*625404D288361E8652C884A0737B363B650A77CE',
+#  }
+#  mysql_database { 'drupal7':
+#    ensure  => 'present',
+#    charset => 'utf8',
+#    collate => 'utf8_general_ci',
+#  }
+#  mysql_grant { 'drupal7@localhost/drupal7.*':
+#    ensure     => 'present',
+#    options    => ['GRANT'],
+#    privileges => ['SELECT', 'INSERT', 'UPDATE', 'DELETE', 'CREATE', 'DROP',
+#                   'INDEX', 'ALTER', 'LOCK TABLES', 'CREATE TEMPORARY TABLES'],
+#    table      => 'drupal7.*',
+#    user       => 'drupal7@localhost',
+#  }
+  mysql::db { 'drupal7':
+      user     => 'drupal7',
+      password => 'drupal7',
+      host     => 'localhost',
+      grant    => ['SELECT', 'INSERT', 'UPDATE', 'DELETE', 'CREATE', 'DROP',
+                   'INDEX', 'ALTER', 'LOCK TABLES', 'CREATE TEMPORARY TABLES'],
+    }
+}
+
 node default {
   class { 'repo': stage => pre }
   class { 'osm_drupal': }
   class { 'osm_nginx': }
+  class { 'osm_mysql': }
 }
