@@ -5,7 +5,7 @@ class osm_mysql (
   $password = 'drupal7'
 ){
 
-  $dependency = ["mysql-server-mroonga"]
+  $dependency = ["php5-mysql", "mysql-server-mroonga"]
 
   class { '::mysql::server':
     require => Exec['apt-get_update']
@@ -13,26 +13,10 @@ class osm_mysql (
   class { '::mysql::client':
     require => Exec['apt-get_update']
   }
-  class { '::mysql::bindings':
-    php_enable => 1,
-    require => Exec['apt-get_update']
-  }
   package {
     $dependency:
      ensure  => "installed",
      require => Exec['apt-get_update']
-  }
-
-  define mysql_database_restore ($dataName = $title,
-                                 $dbname, $dbuser, $dbpass, $trigger ) {
-    exec { "restore-mysql-database-${dataName}":
-      cwd      => "/home/${osm_mysql::workuser}",
-      user     => $osm_mysql::workuser,
-      group    => $osm_mysql::workuser,
-      command  => "/usr/bin/mysql --user=${dbuser} --password=${dbpass} ${dbname} < /vagrant/files/${dataName}.sql",
-      subscribe => $trigger,
-      refreshonly => true,
-    }
   }
 
   mysql::db { $osm_mysql::database:
@@ -54,10 +38,17 @@ password = $osm_mysql::password
 socket   = /var/run/mysqld/mysqld.sock
 ",
   }
-  mysql_database_restore {"drupal_data":
-    dbname  => $osm_mysql::database,
-    dbuser  => $osm_mysql::username,
-    dbpass  => $osm_mysql::password,
-    trigger => File["/home/${osm_mysql::workuser}/.my.cnf"],
+
+  file { '/vagrant/files/drupal-data.sql':
+  audit => mtime,
+  notify => Exec['restore-drupal-data']
+ }
+
+  exec { "restore-drupal-data":
+      cwd      => "/home/${osm_mysql::workuser}",
+      command  => "/usr/bin/mysql --user=${osm_mysql::username} --password=${osm_mysql::password} ${osm_mysql::database} < /vagrant/files/drupal-data.sql",
+      subscribe => Mysql_database["${osm_mysql::database}"],
+      refreshonly => true,
   }
+
 }
