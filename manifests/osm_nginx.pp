@@ -13,10 +13,22 @@ class osm_nginx {
         target => '/etc/nginx/sites-available/drupal';
   }
 
-  package { "nginx": 
-       ensure => latest,
-       require => Exec['apt-get_update']
- }
+  $packages = [
+    "php5-fpm","php5-gd", nginx"]
+
+  package {
+    $packages:
+     ensure  => "installed",
+     require => Exec['apt-get_update']
+  }
+
+  service {
+    "php5-fpm":
+      name      => php5-fpm,
+      ensure    => running,
+      require   => Package["php5-fpm"],
+      enable    => true
+  }
 
   service {
     "nginx":
