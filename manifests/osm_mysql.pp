@@ -1,53 +1,49 @@
-class osm_mysql {
-  include '::mysql::server'
-
-define mysql_database_restore ($dataName = $title, $dbname, $trigger ) {
-  exec { "restore-mysql-database-${dataName}":
-    cwd => "/home/vagrant",
-    command => "/usr/bin/mysql ${dbname} < /vagrant/files/${dataName}.sql",
-    subscribe => $trigger,
-    refreshonly => true,
+class osm_mysql (
+  $workuser = 'vagrant',
+  $database = 'drupal7',
+  $username = 'drupal7',
+  $password = 'drupal7'
+){
+  class { '::mysql::server':
+    require => Exec['apt-get_update']
   }
-}
+  class { '::mysql::client':
+    require => Exec['apt-get_update']
+  }
 
-#  mysql_user { 'drupal7@localhost':
-#    ensure                   => 'present',
-#    password_hash            => '*625404D288361E8652C884A0737B363B650A77CE',
-#  }
-#  mysql_database { 'drupal7':
-#    ensure  => 'present',
-#    charset => 'utf8',
-#    collate => 'utf8_general_ci',
-#  }
-#  mysql_grant { 'drupal7@localhost/drupal7.*':
-#    ensure     => 'present',
-#    options    => ['GRANT'],
-#    privileges => ['SELECT', 'INSERT', 'UPDATE', 'DELETE', 'CREATE', 'DROP',
-#                   'INDEX', 'ALTER', 'LOCK TABLES', 'CREATE TEMPORARY TABLES'],
-#    table      => 'drupal7.*',
-#    user       => 'drupal7@localhost',
-#  }
-  mysql::db { 'drupal7':
-      user     => 'drupal7',
-      password => 'drupal7',
+  define mysql_database_restore ($dataName = $title, $dbname, $dbuser, $trigger ) {
+    exec { "restore-mysql-database-${dataName}":
+      cwd      => "/home/${osm_mysql::workuser}",
+      user     => $osm_mysql::workuser,
+      group    => $osm_mysql::workuser,
+      command  => "/usr/bin/mysql -u ${dbuser} ${dbname} < /vagrant/files/${dataName}.sql",
+      subscribe => $trigger,
+      refreshonly => true,
+    }
+  }
+
+  mysql::db { $osm_mysql::database:
+      user     => $osm_mysql::username,
+      password => $osm_mysql::password,
       host     => 'localhost',
       grant    => ['SELECT', 'INSERT', 'UPDATE', 'DELETE', 'CREATE', 'DROP',
                    'INDEX', 'ALTER', 'LOCK TABLES', 'CREATE TEMPORARY TABLES'],
   }
 
-  file { "/home/vagrant/.my.cnf":
+  file { "/home/${osm_mysql::workuser}/.my.cnf":
     ensure  => present,
-    require => Mysql_database['drupal7'],
-    content => '
+    require => Mysql_database[$osm_mysql::database],
+    content => "
 [client]
 host     = localhost
-user     = drupal7
-password = drupal7
+user     = $osm_mysql::username
+password = $osm_mysql::password
 socket   = /var/run/mysqld/mysqld.sock
-',
+",
   }
   mysql_database_restore {"drupal_data":
-    dbname    => 'drupal7',
-    trigger => File["/home/vagrant/.my.cnf"],
+    dbname  => $osm_mysql::database,
+    dbuser  => $osm_mysql::username,
+    trigger => File["/home/${osm_mysql::workuser}/.my.cnf"],
   }
 }
