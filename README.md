@@ -8,7 +8,7 @@ Preparation
 
 2. Install vagrant
 
-3. prepare `drupal-data.sql` test data.
+3. prepare `files/drupal-data.sql` test data.
   If you are a genuine developer of OSMFJ, you can get it from server.
 
 Getting started

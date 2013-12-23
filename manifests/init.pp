@@ -50,6 +50,15 @@ define drupal_theme_add ($themeName = $title ) {
   }
 }
 
+define mysql_database_restore ($dataName = $title, $dbname ) {
+  exec { "restore-mysql-database-${dataName}":
+    cwd => "/home/vagrant",
+    command => "mysql ${dbname} < /vagrant/files/${dataName}.sql",
+    subscribe => File["/home/vagrant/.my.cnf"],
+    refreshonly => true,
+  }
+}
+
 class repo {
   file {
       '/home/vagrant/.gnupg/':
@@ -292,7 +301,22 @@ class osm_mysql {
       host     => 'localhost',
       grant    => ['SELECT', 'INSERT', 'UPDATE', 'DELETE', 'CREATE', 'DROP',
                    'INDEX', 'ALTER', 'LOCK TABLES', 'CREATE TEMPORARY TABLES'],
-    }
+  }
+
+  file { "/home/vagrant/.my.cnf":
+    ensure  => present,
+    require => Mysql_database['drupal7'],
+    content => '
+[client]
+host     = localhost
+user     = drupal7
+password = drupal7
+socket   = /var/run/mysqld/mysqld.sock
+',
+  }
+  mysql_database_restore {"drupal_data":
+    dbname => 'drupal7',
+  }
 }
 
 node default {
