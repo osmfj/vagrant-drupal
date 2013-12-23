@@ -5,7 +5,7 @@ define mysql_database_restore ($dataName = $title, $dbname, $trigger ) {
   exec { "restore-mysql-database-${dataName}":
     cwd => "/home/vagrant",
     command => "/usr/bin/mysql ${dbname} < /vagrant/files/${dataName}.sql",
-    subscribe => $sub,
+    subscribe => $trigger,
     refreshonly => true,
   }
 }
