@@ -14,7 +14,7 @@ class osm_nginx {
   }
 
   $packages = [
-    "php5-fpm","php5-gd", nginx"]
+    "php5-fpm","php5-gd", "nginx"]
 
   package {
     $packages:
