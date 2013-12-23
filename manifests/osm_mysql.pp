@@ -11,12 +11,13 @@ class osm_mysql (
     require => Exec['apt-get_update']
   }
 
-  define mysql_database_restore ($dataName = $title, $dbname, $dbuser, $trigger ) {
+  define mysql_database_restore ($dataName = $title,
+                                 $dbname, $dbuser, $dbpass, $trigger ) {
     exec { "restore-mysql-database-${dataName}":
       cwd      => "/home/${osm_mysql::workuser}",
       user     => $osm_mysql::workuser,
       group    => $osm_mysql::workuser,
-      command  => "/usr/bin/mysql -u ${dbuser} ${dbname} < /vagrant/files/${dataName}.sql",
+      command  => "/usr/bin/mysql --user=${dbuser} --password=${dbpass} ${dbname} < /vagrant/files/${dataName}.sql",
       subscribe => $trigger,
       refreshonly => true,
     }
@@ -44,6 +45,7 @@ socket   = /var/run/mysqld/mysqld.sock
   mysql_database_restore {"drupal_data":
     dbname  => $osm_mysql::database,
     dbuser  => $osm_mysql::username,
+    dbpass  => $osm_mysql::password,
     trigger => File["/home/${osm_mysql::workuser}/.my.cnf"],
   }
 }
