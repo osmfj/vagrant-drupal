@@ -29,7 +29,7 @@ define module_add ($moduleName = $title ) {
 define library_add ($libName = $title ) {
   exec { "install_library_${libName}":
     cwd => "${osm_drupal::dest}/sites/all/libraries",
-    command => "/bin/tar xzvf /vagrant/files/drupal/libraries/${libName}.tar.gz",
+    command => "/bin/tar xzvf /vagrant/files/drupal/libraries/${libName}-*.tar.gz",
     creates => "${osm_drupal::dest}/sites/all/libraries/${libName}",
     subscribe => File["${osm_drupal::dest}/sites/all/libraries"],
     refreshonly => true,

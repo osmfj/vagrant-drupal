@@ -55,8 +55,8 @@ class osm_drupal_modules {
   osm_drupal::module_add{"site_map": }
 
 # library
-  osm_drupal::library_add{"leaflet-0.7.1":}
-  osm_drupal::library_add{"facebook-php-sdk-3.2.3":}
+  osm_drupal::library_add{"leaflet":}
+  osm_drupal::library_add{"facebook-php-sdk":}
 
 # themes
   osm_drupal::theme_add{"touch":}
