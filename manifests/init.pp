@@ -13,11 +13,21 @@ class my_repo inherits repo {
 #      ensure => present,
 #  }
 
+####
+
 }
 
 node default {
   class { 'my_repo':}
-  class { 'osm_drupal':}
+  class { 'osm_drupal':
+    version  => '7.24',
+    dest     => '/opt/drupal7'
+  }
   class { 'osm_nginx':}
-  class { 'osm_mysql':}
+  class { 'osm_mysql':
+    workuser => 'vagrant',
+    database => 'drupal7',
+    username => 'drupal7',
+    password => 'drupal7'
+  }
 }

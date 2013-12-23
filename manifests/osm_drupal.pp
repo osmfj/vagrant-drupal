@@ -1,6 +1,4 @@
-class osm_drupal {
-
-  $version = "7.24"
+class osm_drupal ($version = "7.24", $dest = "/opt/drupal7") {
 
   $dependency = [
     "php5-fpm","php5-gd","php5-mysql","exim4-daemon-light",
@@ -21,61 +19,61 @@ class osm_drupal {
 
 define drupal_drush_add ($target = $title){
   exec { "install-drush-${target}":
-    cwd => "/opt/drupal7/sites/all/modules",
+    cwd => "${osm_drupal::dest}/sites/all/modules",
     command => "/bin/tar xvzf /vagrant/files/drupal/modules/${target}.tar.gz",
-    creates => "/opt/drupal7/sites/all/modules/${target}",
-    require => File["/opt/drupal7/sites/all/modules"],
+    creates => "${osm_drupal::dest}/sites/all/modules/${target}",
+    require => File["${osm_drupal::dest}/sites/all/modules"],
     before => File["link-drush-bin"]
   }
 
   file { "/usr/local/bin/drush":
-    ensure => "/opt/drupal7/sites/all/modules/${target}/drush",
+    ensure => "${osm_drupal::dest}/sites/all/modules/${target}/drush",
     alias  => "link-drush-bin",
   }
 }
 
 define drupal_module_add ($moduleName = $title ) {
   exec { "install_module_${moduleName}":
-    cwd => "/opt/drupal7/sites/all/modules",
+    cwd => "${osm_drupal::dest}/sites/all/modules",
     command => "/bin/tar xzvf /vagrant/files/drupal/modules/${moduleName}-*.tar.gz",
-    creates => "/opt/drupal7/sites/all/modules/${moduleName}",
+    creates => "${osm_drupal::dest}/sites/all/modules/${moduleName}",
     subscribe => Exec["untar-drupal-dist"],
-    require => File["/opt/drupal7/sites/all/modules"],
+    require => File["${osm_drupal::dest}/sites/all/modules"],
     refreshonly => true,
   }
 }
 
 define drupal_library_add ($libName = $title ) {
   exec { "install_library_${libName}":
-    cwd => "/opt/drupal7/sites/all/libraries",
+    cwd => "${osm_drupal::dest}/sites/all/libraries",
     command => "/bin/tar xzvf /vagrant/files/drupal/libraries/${libName}.tar.gz",
-    creates => "/opt/drupal7/sites/all/libraries/${libName}",
-    subscribe => File["/opt/drupal7/sites/all/libraries"],
+    creates => "${osm_drupal::dest}/sites/all/libraries/${libName}",
+    subscribe => File["${osm_drupal::dest}/sites/all/libraries"],
     refreshonly => true,
   }
 }
 
 define drupal_theme_add ($themeName = $title ) {
   exec { "install_module_${themeName}":
-    cwd => "/opt/drupal7/sites/all/themes",
+    cwd => "${osm_drupal::dest}/sites/all/themes",
     command => "/bin/tar xzvf /vagrant/files/drupal/themes/${themeName}-*.tar.gz",
-    creates => "/opt/drupal7/sites/all/themes/${themeName}",
+    creates => "${osm_drupal::dest}/sites/all/themes/${themeName}",
     subscribe => Exec["untar-drupal-dist"],
-    require => File["/opt/drupal7/sites/all/themes"],
+    require => File["${osm_drupal::dest}/sites/all/themes"],
     refreshonly => true,
   }
 }
-  file {"/opt/drupal7/sites/all/modules":
+  file {"${osm_drupal::dest}/sites/all/modules":
     ensure => directory,
     subscribe => Exec["untar-drupal-dist"]
   }
 
-  file {"/opt/drupal7/sites/all/themes":
+  file {"${osm_drupal::dest}/sites/all/themes":
     ensure => directory,
     subscribe => Exec["untar-drupal-dist"]
   }
 
-  file {"/opt/drupal7/sites/all/libraries":
+  file {"${osm_drupal::dest}/sites/all/libraries":
     ensure => directory,
     subscribe => Exec["untar-drupal-dist"]
   }
@@ -94,7 +92,8 @@ define drupal_theme_add ($themeName = $title ) {
         subscribe => File["drupal-dist-tgz"]
   }
 
-  file { '/opt/drupal7':
+  file { "make-drupal-link":
+    path   => $osm_drupal::dest,
     ensure => link,
     target => "/opt/drupal-$version",
     subscribe => Exec["untar-drupal-dist"]
