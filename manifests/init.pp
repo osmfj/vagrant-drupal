@@ -25,6 +25,7 @@ class osm_package {
   package {
     $dependency:
      ensure  => "installed",
+     require => Exec['apt-get_update']
   }
 
   service {
