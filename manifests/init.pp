@@ -39,6 +39,17 @@ define drupal_library_add ($libName = $title ) {
   }
 }
 
+define drupal_theme_add ($themeName = $title ) {
+  exec { "install_module_${themeName}":
+    cwd => "/opt/drupal7/sites/all/themes",
+    command => "tar xzvf /vagrant/files/drupal/themes/${themeName}-*.tar.gz",
+    creates => "/opt/drupal7/sites/all/themes/${themeName}",
+    subscribe => Exec["untar-drupal-dist"],
+    require => File["/opt/drupal7/sites/all/themes"],
+    refreshonly => true,
+  }
+}
+
 class repo {
   file {
       '/home/vagrant/.gnupg/':
@@ -163,6 +174,10 @@ class osm_drupal {
     subscribe => Exec["untar-drupal-dist"]
   }
 
+  file {"/opt/drupal7/sites/all/themes":
+    ensure => directory,
+    subscribe => Exec["untar-drupal-dist"]
+  }
 
   file {"/opt/drupal7/sites/all/libraries":
     ensure => directory,
@@ -245,6 +260,10 @@ class osm_drupal {
 # library
   drupal_library_add{"leaflet-0.7.1":}
   drupal_library_add{"facebook-php-sdk-3.2.3":}
+
+# themes
+  drupal_theme_add{"touch":}
+  drupal_theme_add{"bootstrap":}
 }
 
 node default {
