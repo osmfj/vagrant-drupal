@@ -1,5 +1,5 @@
 class osm_nginx {
-    file {
+  file {
       '/etc/nginx/sites-available/drupal':
         ensure => file,
         owner => root,
@@ -11,7 +11,12 @@ class osm_nginx {
         require => Service["php5-fpm"],
         notify  => Service["nginx"], 
         target => '/etc/nginx/sites-available/drupal';
-    }
+  }
+
+  package { "nginx": 
+       ensure => latest,
+       require => Exec['apt-get_update']
+ }
 
   service {
     "nginx":

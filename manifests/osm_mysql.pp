@@ -4,11 +4,23 @@ class osm_mysql (
   $username = 'drupal7',
   $password = 'drupal7'
 ){
+
+  $dependency = ["mysql-server-mroonga"]
+
   class { '::mysql::server':
     require => Exec['apt-get_update']
   }
   class { '::mysql::client':
     require => Exec['apt-get_update']
+  }
+  class { '::mysql::bindings':
+    php_enable => 1,
+    require => Exec['apt-get_update']
+  }
+  package {
+    $dependency:
+     ensure  => "installed",
+     require => Exec['apt-get_update']
   }
 
   define mysql_database_restore ($dataName = $title,
