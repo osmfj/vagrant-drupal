@@ -43,7 +43,7 @@ class apt {
   }
 
   exec {'apt-get_update':
-    command     => 'apt-get update',
+    command     => '/usr/bin/apt-get update',
     refreshonly => true,
   }
 
