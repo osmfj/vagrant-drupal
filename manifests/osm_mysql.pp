@@ -46,7 +46,7 @@ socket   = /var/run/mysqld/mysqld.sock
 
   exec { "restore-drupal-data":
       cwd      => "/home/${osm_mysql::workuser}",
-      command  => "/usr/bin/mysql --user=${osm_mysql::username} --password=${osm_mysql::password} ${osm_mysql::database} < /vagrant/files/drupal-data.sql",
+      command  => "/bin/bash -c \"/usr/bin/mysql --user=${osm_mysql::username} --password=${osm_mysql::password} ${osm_mysql::database} < /vagrant/files/drupal-data.sql\"",
       subscribe => Mysql_database["${osm_mysql::database}"],
       refreshonly => true,
   }
