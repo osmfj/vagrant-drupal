@@ -49,9 +49,10 @@ class osm_drupal_modules {
   osm_drupal::module_add{"profile2": }
   osm_drupal::module_add{"twitter": }
 
-
 # Search development
   osm_drupal::module_add{"search_api": }
+
+# misc
   osm_drupal::module_add{"site_map": }
 
 # library
