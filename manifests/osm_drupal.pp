@@ -67,6 +67,36 @@ define theme_add ($themeName = $title ) {
     before => Exec["untar-drupal-dist"]
   }
 
+  file { "${osm_drupal::dest}/sites/default":
+    ensure => directory,
+    subscribe => Exec["untar-drupal-dist"]
+  }
+
+  $workdirs = ["${osm_drupal::dest}/sites/default/files",
+               "${osm_drupal::dest}/sites/default/files/languages",
+               "${osm_drupal::dest}/sites/default/files/picutures",
+               "${osm_drupal::dest}/cache",
+               "${osm_drupal::dest}/cache/normal"]
+  file { $workdirs:
+    ensure => directory,
+    owner => www-data,
+    group => www-data,
+    mode => 755,
+    subscribe => File["${osm_drupal::dest}/sites/default"]
+  }
+
+  define add_config ($conffile = $title) {
+    file {"${osm_drupal::dest}/sites/default/${conffile}":
+      ensure => file,
+      source => "/vagrant/files/${conffile}",
+      subscribe => File["${osm_drupal::dest}/sites/default"]
+    }
+  }
+
+  add_config{"settings.php":}
+  add_config{"dbconfig.php":}
+  add_config{"baseurl.php":}
+
   exec { "untar-drupal-$version":
         cwd       => "/opt",
         command   => "/bin/tar xf drupal-$version.tar.gz",
