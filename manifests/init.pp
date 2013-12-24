@@ -2,6 +2,7 @@ import 'repo'
 import 'osm_drupal'
 import 'osm_nginx'
 import 'osm_mysql'
+import 'php5-fpm'
 import 'osm_drupal_modules'
 
 class my_repo inherits repo {
@@ -18,4 +19,5 @@ node default {
   class { 'osm_nginx':}
   class { 'osm_mysql': workuser => 'vagrant', database => 'drupal7',
                        username => 'drupal7', password => 'drupal7' }
+  class { 'php5-fpm':}
 }

@@ -16,7 +16,8 @@ class osm_mysql (
   package {
     $dependency:
      ensure  => "installed",
-     require => Exec['apt-get_update']
+     require => Exec['apt-get_update'],
+     notify  => Service['php5-fpm']
   }
 
   mysql::db { $osm_mysql::database:

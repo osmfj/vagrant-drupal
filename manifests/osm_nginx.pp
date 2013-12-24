@@ -8,26 +8,18 @@ class osm_nginx {
         source => '/vagrant/files/drupal-nginx.conf';
       '/etc/nginx/sites-enabled/drupal':
         ensure => 'link',
-        require => Service["php5-fpm"],
+        require => Package["nginx"],
+        subscribe => File["/etc/nginx/sites-available/drupal"],
         notify  => Service["nginx"], 
         target => '/etc/nginx/sites-available/drupal';
   }
 
-  $packages = [
-    "php5-fpm","php5-gd", "nginx"]
+  $packages = ["nginx"]
 
   package {
     $packages:
      ensure  => "installed",
      require => Exec['apt-get_update']
-  }
-
-  service {
-    "php5-fpm":
-      name      => php5-fpm,
-      ensure    => running,
-      require   => Package["php5-fpm"],
-      enable    => true
   }
 
   service {
