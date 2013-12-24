@@ -52,4 +52,14 @@ socket   = /var/run/mysqld/mysqld.sock
       refreshonly => true,
   }
 
+  define mroonga-query ($dbName=$title) {
+    exec {"alter-mroonga-${dbName}":
+      cwd      => "/home/${osm_mysql::workuser}",
+      command  => "/bin/echo \"ALTER ${dbName} ENGINE=mroonga COMMENT='engine \"innodb\"' DEFAULT CHARSET utf8;\" |/usr/bin/mysql --user=${osm_mysql::username} --password=${osm_mysql::password} ${osm_mysql::database}",
+    require => Package["mysql-server-mroonga"]
+    }
+  }
+
+  mroonga-query {"field_data_body":}
+  mroonga-query {"field_data_comment":}
 }
