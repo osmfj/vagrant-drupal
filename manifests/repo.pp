@@ -1,17 +1,40 @@
 class repo {
   include apt
 
-  apt::ppa {
-    'miurahr':
-      ensure   => present,
-      key      => 'FFB4B2A2',
-      ppa      => 'openresty'
-  }
-
   apt::sources_list {"groonga":
       ensure  => present,
       content => 'deb http://packages.groonga.org/ubuntu/ precise universe',
   }
+
+  apt::key {"FFB4B2A2":
+    content =>
+"-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+mI0ESqTVdQEEAJ0sE3+S2URYFqKgs3G9ZqIyGHLWhKMDd1T3q4VqDjlIA+tf4Rp+
+7pImYE//ZqtCMFpO+PyeP3g72XxCjwDdoLkxZyHcBPXHPRrVn6fNr8fHW9gQ3U28
+pKR+Qk9cNn57gZKgfvUyqEuX+yzoo64AD88hX/a7OpHnUrqQMIOrEc5NABEBAAG0
+GExhdW5jaHBhZCBkZWxsLW1pbmktcGx1c4i2BBMBAgAgBQJKpNV1AhsDBgsJCAcD
+AgQVAggDBBYCAwECHgECF4AACgkQeIRNEv+0sqKiNQP6A+CNvY10TMuEF47QJNHd
+IG7L3MaD1hOixrkNBJ64iMSzyDWgVEO/2HUbh7bJOi+TPlklTVl39zGiQVXUDk8L
+0e10SsCSuuvZCOQ94EI1HU01N1f8G9LlXh4pxSoL6BomT8pDu4ojfg9mGWhLsd0C
+QlSMfRUk97643Co24KmjpM8=
+=bc2P
+-----END PGP PUBLIC KEY BLOCK-----",
+  }
+
+  apt::sources_list {"ppa-miurahr":
+      ensure  => present,
+      content => 'deb http://ppa.launchpad.net/miurahr/openresty/ubuntu precise main',
+  }
+
+#  apt::ppa {
+#    'miurahr':
+#      ensure   => present,
+#      key      => 'FFB4B2A2',
+#      ppa      => 'openresty'
+#  }
+
 
   apt::key {"45499429":
       content  => "-----BEGIN PGP PUBLIC KEY BLOCK-----
