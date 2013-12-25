@@ -5,6 +5,9 @@ DRUPAL_DIR=$ROOT/files/drupal
 modules=(
   admin_menu-7.x-3.0-rc4.tar.gz \
   antispam-7.x-1.5.tar.gz \
+  apachesolr-7.x-1.6.tar.gz \
+  apachesolr_location-7.x-1.1.tar.gz \
+  apachesolr_user-7.x-1.x-dev.tar.gz \
   boost-7.x-1.0-beta2.tar.gz \
   captcha-7.x-1.0.tar.gz \
   cck-7.x-3.0-alpha3.tar.gz \
@@ -26,6 +29,7 @@ modules=(
   jquery_update-7.x-2.3.tar.gz \
   leaflet-7.x-1.0.tar.gz \
   libraries-7.x-2.1.tar.gz \
+  location-7.x-3.1.tar.gz \
   message-7.x-1.9.tar.gz \
   oauth-7.x-3.1.tar.gz \
   openlayers-7.x-2.0-beta7.tar.gz \

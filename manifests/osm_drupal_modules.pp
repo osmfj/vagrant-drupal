@@ -57,6 +57,10 @@ class osm_drupal_modules {
 
 # Search development
   osm_drupal::module_add{"search_api": }
+  osm_drupal::module_add{"apachesolr": }
+  osm_drupal::module_add{"apachesolr_location": }
+  osm_drupal::module_add{"apachesolr_user": }
+  osm_drupal::module_add{"location": }
 
 # misc
   osm_drupal::module_add{"site_map": }
