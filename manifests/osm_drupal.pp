@@ -24,6 +24,9 @@ define module_add ($moduleName = $title ) {
     require => File["${osm_drupal::dest}/sites/all/modules"],
     refreshonly => true,
   }
+  file { "${osm_drupal::dest}/sites/all/modules/${moduleName}":
+    require => Exec["install_module_${moduleName}"]
+  }
 }
 
 define library_add ($libName = $title ) {
@@ -33,6 +36,9 @@ define library_add ($libName = $title ) {
     creates => "${osm_drupal::dest}/sites/all/libraries/${libName}",
     subscribe => File["${osm_drupal::dest}/sites/all/libraries"],
     refreshonly => true,
+  }
+  file { "${osm_drupal::dest}/sites/all/libraries/${libName}":
+    require => Exec["install_library_${libName}"]
   }
 }
 
@@ -44,6 +50,9 @@ define theme_add ($themeName = $title ) {
     subscribe => Exec["untar-drupal-dist"],
     require => File["${osm_drupal::dest}/sites/all/themes"],
     refreshonly => true,
+  }
+  file { "${osm_drupal::dest}/sites/all/themes/${themeName}":
+    require => Exec["install_module_${themeName}"]
   }
 }
   file {"${osm_drupal::dest}/sites/all/modules":
@@ -114,9 +123,10 @@ define theme_add ($themeName = $title ) {
 
   define hotfix ($patchName = $title, $type='modules', $target) {
     exec {"drupal-hostfix-${patchName}":
-      cwd     => "${osm_drupal::dest}/sites/all/${type}/${target}",
-      command => "/usr/bin/patch -p1 -N -s -i /vagrant/files/${patchName}",
-      onlyif => "/usr/bin/patch -p1 -N -i /vagrant/files/${patchName} --dry-run",
+      cwd       => "${osm_drupal::dest}/sites/all/${type}/${target}",
+      command   => "/usr/bin/patch -p1 -N -s -i /vagrant/files/${patchName}",
+      onlyif    => "/usr/bin/patch -p1 -N -i /vagrant/files/${patchName} --dry-run",
+      subscribe => File["${osm_drupal::dest}/sites/all/${type}/${target}"]
     }
   }
 }
