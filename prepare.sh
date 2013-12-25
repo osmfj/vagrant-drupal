@@ -18,6 +18,7 @@ modules=(
   fbconnect-7.x-2.0-beta4.tar.gz \
   geofield-7.x-2.1.tar.gz \
   geophp-7.x-1.7.tar.gz \
+  geocoder-7.x-1.2.tar.gz \
   google_analytics-7.x-1.4.tar.gz \
   hidden_captcha-7.x-1.0.tar.gz \
   httprl-7.x-1.13.tar.gz \

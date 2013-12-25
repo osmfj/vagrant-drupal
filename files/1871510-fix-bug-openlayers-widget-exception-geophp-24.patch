@@ -1,0 +1,17 @@
+Index: geofield.widgets.openlayers.inc
+===================================================================
+--- a/geofield.widgets.openlayers.inc
++++ b/geofield.widgets.openlayers.inc
+@@ -163,8 +163,10 @@
+   $geoms = array();
+ 
+   foreach ($items as $delta => $item) {
+-    if (is_array($item) && array_key_exists('geom', $item)) {
+-      $geoms[] = geoPHP::load($item['geom']);
++    if (is_array($item)) {
++      if (isset($item['geom'])) {
++        $geoms[] = geoPHP::load($item['geom']);
++      }
+     }
+     else {
+       $geoms[] = geoPHP::load($item);

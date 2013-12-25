@@ -41,6 +41,12 @@ class osm_drupal_modules {
   osm_drupal::module_add{"openlayers": }
   osm_drupal::module_add{"proj4js": }
   osm_drupal::module_add{"panels": }
+  osm_drupal::module_add{"geocoder": }
+  osm_drupal::hotfix{
+    "1871510-fix-bug-openlayers-widget-exception-geophp-24.patch":
+    type   => 'modules',
+    target => 'geofield'
+  }
 
 # SignOn
   osm_drupal::module_add{"fbconnect": }

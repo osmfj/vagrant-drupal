@@ -111,5 +111,13 @@ define theme_add ($themeName = $title ) {
     target => "/opt/drupal-$version",
     subscribe => Exec["untar-drupal-dist"]
     }
+
+  define hotfix ($patchName = $title, $type='modules', $target) {
+    exec {"drupal-hostfix-${patchName}":
+      cwd     => "${osm_drupal::dest}/sites/all/${type}/${target}",
+      command => "/usr/bin/patch -p1 -N -s -i /vagrant/files/${patchName}",
+      onlyif => "/usr/bin/patch -p1 -N -i /vagrant/files/${patchName} --dry-run",
+    }
+  }
 }
 
