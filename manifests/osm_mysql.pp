@@ -8,7 +8,12 @@ class osm_mysql (
   $dependency = ["php5-mysql", "mysql-server-mroonga"]
 
   class { '::mysql::server':
-    require => Exec['apt-get_update']
+    require => Exec['apt-get_update'],
+    override_options => {
+      'mysqld' => {
+        'mroonga_default_parser' => 'TokenMecab'
+      }
+    }
   }
   class { '::mysql::client':
     require => Exec['apt-get_update']
@@ -45,18 +50,23 @@ socket   = /var/run/mysqld/mysqld.sock
   notify => Exec['restore-drupal-data']
  }
 
+  $mysql_command = "/usr/bin/mysql --user=${osm_mysql::username} --password=${osm_mysql::password} ${osm_mysql::database}"
+
   exec { "restore-drupal-data":
       cwd      => "/home/${osm_mysql::workuser}",
-      command  => "/bin/bash -c \"/usr/bin/mysql --user=${osm_mysql::username} --password=${osm_mysql::password} ${osm_mysql::database} < /vagrant/files/drupal-data.sql\"",
+      command  => "/bin/bash -c \"$osm_mysql::mysql_command < /vagrant/files/drupal-data.sql\"",
       subscribe => [Mysql_database["${osm_mysql::database}"], File["/home/vagrant/.my.cnf"]],
       refreshonly => true,
   }
 
-  define mroonga-query ($dbName=$title) {
-    exec {"alter-mroonga-${dbName}":
+  define mroonga-query ($tableName=$title) {
+    exec {"alter-mroonga-${tableName}":
       cwd      => "/home/${osm_mysql::workuser}",
-      command  => "/bin/echo \"ALTER ${dbName} ENGINE=mroonga COMMENT='engine \"innodb\"' DEFAULT CHARSET utf8;\" |/usr/bin/mysql --user=${osm_mysql::username} --password=${osm_mysql::password} ${osm_mysql::database}",
-    require => Package["mysql-server-mroonga"]
+      command  => "/bin/echo \"ALTER ${tableName} ENGINE=mroonga COMMENT='engine \"innodb\"' DEFAULT CHARSET utf8;\" | ${osm_mysql::mysql_command}",
+      require => Package["mysql-server-mroonga"],
+      onlyif => ["/bin/echo 'SELECT plugin_status FROM information_schema.plugins WHERE plugin_name = \"mroonga\";' | ${osm_mysql::mysql_command} | grep -c 'ACTIVE'",
+      "/bin/bash -c \"/bin/echo 'SHOW CREATE TABLE ${tableName};' | ${osm_mysql::mysql_command} | grep -i -c -e '!mroonga'\""
+      ]
     }
   }
 
