@@ -62,11 +62,10 @@ socket   = /var/run/mysqld/mysqld.sock
   define mroonga-query ($tableName=$title) {
     exec {"alter-mroonga-${tableName}":
       cwd      => "/home/${osm_mysql::workuser}",
-      command  => "/bin/echo \"ALTER ${tableName} ENGINE=mroonga COMMENT='engine \"innodb\"' DEFAULT CHARSET utf8;\" | ${osm_mysql::mysql_command}",
-      require => Package["mysql-server-mroonga"],
-      onlyif => ["/bin/echo 'SELECT plugin_status FROM information_schema.plugins WHERE plugin_name = \"mroonga\";' | ${osm_mysql::mysql_command} | grep -c 'ACTIVE'",
-      "/bin/bash -c \"/bin/echo 'SHOW CREATE TABLE ${tableName};' | ${osm_mysql::mysql_command} | grep -i -c -e '!mroonga'\""
-      ]
+      command  => "/bin/echo \"ALTER TABLE ${tableName} ENGINE=mroonga COMMENT='engine \"innodb\"' DEFAULT CHARSET utf8;\" | ${osm_mysql::mysql_command} --force",
+      unless => "/bin/echo 'SHOW CREATE TABLE ${tableName};' | ${osm_mysql::mysql_command} | grep -i -c 'mroonga'",
+      require   => Package["mysql-server-mroonga"],
+      subscribe => Exec["restore-drupal-data"],
     }
   }
 
