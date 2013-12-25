@@ -69,6 +69,6 @@ socket   = /var/run/mysqld/mysqld.sock
     }
   }
 
-  mroonga-query {"field_data_body":}
-  mroonga-query {"field_data_comment":}
+  # mroonga-query {"field_data_body":}
+  # mroonga-query {"field_data_comment":}
 }
