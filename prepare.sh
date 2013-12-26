@@ -1,6 +1,10 @@
 #! /bin/bash
 
 ROOT=`pwd`
+
+cd ${ROOT}/files/
+wget -c -N http://apache.petsads.us/lucene/solr/4.6.0/solr-4.6.0.tgz
+
 DRUPAL_DIR=$ROOT/files/drupal
 modules=(
   admin_menu-7.x-3.0-rc4.tar.gz \

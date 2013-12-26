@@ -4,6 +4,7 @@ import 'osm_nginx'
 import 'osm_mysql'
 import 'php5-fpm'
 import 'osm_drupal_modules'
+import 'jetty-solr'
 
 class my_repo inherits repo {
   ## Use apt-cacher package cache on host
@@ -20,4 +21,5 @@ node default {
   class { 'osm_mysql': workuser => 'vagrant', database => 'drupal7',
                        username => 'drupal7', password => 'drupal7' }
   class { 'php5-fpm':}
+  class { 'jetty-solr': sitenames => ['drupal7']}
 }
