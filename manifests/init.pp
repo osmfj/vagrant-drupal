@@ -1,3 +1,5 @@
+Exec { path => [ "/bin/", "/sbin/" , "/usr/bin/", "/usr/sbin/" ] }
+
 import 'repo'
 import 'osm_drupal'
 import 'osm_nginx'
