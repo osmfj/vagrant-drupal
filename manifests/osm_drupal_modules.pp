@@ -38,6 +38,11 @@ class osm_drupal_modules {
   osm_drupal::module_add{"geofield": }
   osm_drupal::module_add{"geophp": }
   osm_drupal::module_add{"leaflet": }
+  osm_drupal::hotfix{
+    "leaflet_library_version_detection.patch":
+    type   => 'modules',
+    target => 'leaflet'
+  }
   osm_drupal::module_add{"openlayers": }
   osm_drupal::module_add{"proj4js": }
   osm_drupal::module_add{"panels": }
