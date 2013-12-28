@@ -1,3 +1,5 @@
 *~
 *.gz
 .vagrant
+files/solr-4.6.0.tgz
+files/drupal-data.sql
