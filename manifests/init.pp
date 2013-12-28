@@ -21,5 +21,5 @@ node default {
   class { 'osm_mysql': workuser => 'vagrant', database => 'drupal7',
                        username => 'drupal7', password => 'drupal7' }
   class { 'php5-fpm':}
-  class { 'jetty-solr': sitenames => ['drupal7']}
+  class { 'jetty-solr': }
 }

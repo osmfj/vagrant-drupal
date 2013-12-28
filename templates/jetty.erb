@@ -14,6 +14,7 @@ VERBOSE=yes
 # Use 0.0.0.0 as host to accept all connections.
 # Uncomment to restrict access to localhost
 #JETTY_HOST=$(uname -n)
+JETTY_HOST=0.0.0.0
 
 # The network port used by Jetty
 #JETTY_PORT=8080
@@ -29,7 +30,7 @@ VERBOSE=yes
 JAVA_OPTIONS="-Dsolr.solr.home=<%= @solr_home %>"
 
 # Home of Java installation.
-#JAVA_HOME=
+JAVA_HOME="<%= @java_home %>"
 
 # The first existing directory is used for JAVA_HOME (if JAVA_HOME is not
 # defined in /etc/default/jetty). Should contain a list of space separated directories.

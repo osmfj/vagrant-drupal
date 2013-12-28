@@ -1,5 +1,5 @@
 <solr persistent="true">
-<% sitenames.each do |s| %>
+<% @sitenames.each do |s| %>
  <cores adminPath="/admin/cores">
  <core name="<%= s %>" instanceDir="<%= s %>" dataDir="/var/lib/solr/<%= s %>/data" />
  </cores>
