@@ -1,5 +1,13 @@
 class osm_drupal ($version = "7.24", $dest = "/opt/drupal7") {
 
+  $packages = ["php5-cli", "php5-gd", "php5-curl", "php5-mcrypt"]
+
+  package {
+    $packages:
+     ensure  => "installed",
+     require => Exec['apt-get_update']
+  }
+
 define drush_add ($target = $title){
   exec { "install-drush-${target}":
     cwd => "${osm_drupal::dest}/sites/all/modules",
@@ -13,6 +21,19 @@ define drush_add ($target = $title){
     ensure => "${osm_drupal::dest}/sites/all/modules/${target}/drush",
     alias  => "link-drush-bin",
   }
+
+  file {"${osm_drupal::dest}/sites/all/modules/${target}/lib":
+    ensure => directory,
+    require => Exec["install-drush-${target}"]
+  }
+
+  exec {"install_drush_lib_Console_Table":
+    cwd => "${osm_drupal::dest}/sites/all/modules/${target}/lib/",
+    require => File["${osm_drupal::dest}/sites/all/modules/${target}/lib"],
+    command => "/bin/tar xvzf /vagrant/files/drupal/Console_Table-*.tgz",
+    creates => "${osm_drupal::dest}/sites/all/modules/${target}/lib/Console-Table",
+  }
+
 }
 
 define module_add ($moduleName = $title ) {

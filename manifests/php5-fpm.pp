@@ -1,6 +1,6 @@
 class php5-fpm {
 
-  $packages = ["php5-fpm","php5-gd", "php5-curl", "php5-mcrypt"]
+  $packages = ["php5-fpm"]
 
   package {
     $packages:
