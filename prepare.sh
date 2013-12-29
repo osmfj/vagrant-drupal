@@ -10,7 +10,7 @@ modules=(
   cck-7.x-3.0-alpha3.tar.gz \
   ckeditor-7.x-1.13.tar.gz \
   ctools-7.x-1.3.tar.gz \
-  date-7.x-2.6.tar.gz \
+  date-7.x-2.7.tar.gz \
   dhtml_menu-7.x-1.0-beta1.tar.gz \
   diff-7.x-3.2.tar.gz \
   drush-6.2.0.tar.gz \
