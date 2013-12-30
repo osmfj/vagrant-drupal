@@ -24,14 +24,16 @@ define drush_add ($target = $title){
 
   file {"${osm_drupal::dest}/sites/all/modules/${target}/lib":
     ensure => directory,
-    require => Exec["install-drush-${target}"]
+    require => Exec["install-drush-${target}"],
+    before => Exec["install_drush_lib_Console_Table"]
   }
 
   exec {"install_drush_lib_Console_Table":
     cwd => "${osm_drupal::dest}/sites/all/modules/${target}/lib/",
-    require => File["${osm_drupal::dest}/sites/all/modules/${target}/lib"],
+    subscribe => File["${osm_drupal::dest}/sites/all/modules/${target}/lib"],
     command => "/bin/tar xvzf /vagrant/files/drupal/Console_Table-*.tgz",
     creates => "${osm_drupal::dest}/sites/all/modules/${target}/lib/Console-Table",
+    refreshonly => true,
   }
 
 }
