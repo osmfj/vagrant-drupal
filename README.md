@@ -8,8 +8,6 @@ Preparation
 
 2. Install vagrant and VirtualBox or KVM/Qemu.
 
-3. prepare `files/drupal-data.sql` test data.
-  If you are a genuine developer of OSMFJ, you can get it from server.
 
 Getting started
 --------
@@ -20,6 +18,21 @@ Getting started
    When default, ```192.168.123.10 drupal```
 
 1. Access URL 'drupal' from your Web browser.
+
+
+Contribute
+------------
+
+To contribute something to improve OpenStreetMap.jp site, please follow
+next procedure.
+
+1. fork this tree onto your github.com repository.
+
+1. make new branch named with your theme what you want to improve.
+
+1. hack hack hack
+
+1. pull request for this repository.
 
 
 Limitation
