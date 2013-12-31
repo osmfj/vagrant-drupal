@@ -30,10 +30,9 @@ define drush_add ($target = $title){
 
   exec {"install_drush_lib_Console_Table":
     cwd => "${osm_drupal::dest}/sites/all/modules/${target}/lib/",
-    subscribe => File["${osm_drupal::dest}/sites/all/modules/${target}/lib"],
+    subscribe => File["/usr/local/bin/drush"],
     command => "/bin/tar xvzf /vagrant/files/drupal/Console_Table-*.tgz",
     creates => "${osm_drupal::dest}/sites/all/modules/${target}/lib/Console-Table",
-    refreshonly => true,
   }
 
 }
