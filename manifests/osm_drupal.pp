@@ -12,27 +12,27 @@ define drush_add ($target = $title){
   exec { "install-drush-${target}":
     cwd => "${osm_drupal::dest}/sites/all/modules",
     command => "/bin/tar xvzf /vagrant/files/drupal/modules/${target}.tar.gz",
-    creates => "${osm_drupal::dest}/sites/all/modules/${target}",
+    creates => "${osm_drupal::dest}/sites/all/modules/drush",
     require => File["${osm_drupal::dest}/sites/all/modules"],
     before => File["link-drush-bin"]
   }
 
   file { "/usr/local/bin/drush":
-    ensure => "${osm_drupal::dest}/sites/all/modules/${target}/drush",
+    ensure => "${osm_drupal::dest}/sites/all/modules/drush/drush",
     alias  => "link-drush-bin",
   }
 
-  file {"${osm_drupal::dest}/sites/all/modules/${target}/lib":
+  file {"${osm_drupal::dest}/sites/all/modules/drush/lib":
     ensure => directory,
     require => Exec["install-drush-${target}"],
     before => Exec["install_drush_lib_Console_Table"]
   }
 
   exec {"install_drush_lib_Console_Table":
-    cwd => "${osm_drupal::dest}/sites/all/modules/${target}/lib/",
+    cwd => "${osm_drupal::dest}/sites/all/modules/drush/lib/",
     subscribe => File["/usr/local/bin/drush"],
     command => "/bin/tar xvzf /vagrant/files/drupal/Console_Table-*.tgz",
-    creates => "${osm_drupal::dest}/sites/all/modules/${target}/lib/Console-Table",
+    creates => "${osm_drupal::dest}/sites/all/modules/drush/lib/Console-Table",
   }
 
 }
