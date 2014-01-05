@@ -3,12 +3,22 @@
 
 Vagrant.configure("2") do |config|
   
-  config.vm.box     = "precise64"
+  config.vm.box           = "precise64"
+  config.vm.box_url      = "http://files.vagrantup.com/precise64.box"
   config.vm.network :private_network, ip:"192.168.123.10"
-  config.vm.hostname = "vagrant.example.com"
+  config.vm.hostname      = "vagrant.example.com"
   
   config.vm.provider :kvm do |kvm,override|
       kvm.gui = true
+      override.vm.box_url  = "https://dl.dropboxusercontent.com/u/90779460/precise64-kvm.box"
+  end
+
+  config.vm.provider :vmware do |vmware,override|
+    override.vm.box_url    = "http://files.vagrantup.com/precise64_vmware.box"
+  end
+
+  config.vm.provider :lxc do |lxc,override|
+    override.vm.box_url    = "http://dl.dropbox.com/u/13510779/lxc-precise-amd64-2013-07-12.box"
   end
 
   config.vm.provider :aws do |aws,override|
@@ -24,7 +34,7 @@ Vagrant.configure("2") do |config|
       override.vm.box       = "dummy"
       override.vm.box_url   = "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box"
       override.ssh.username = "ubuntu"
-      override.ssh.private_key_path = "~/Management/Aws/cert/miurahr_tokyo.pem"
+      override.ssh.private_key_path = "YOUR_AWS_KEY_PATH"
   end
 
   config.vm.provision :puppet do |puppet|
