@@ -48,8 +48,8 @@ themes=(bootstrap-7.x-3.0.tar.gz  touch-7.x-1.7.tar.gz)
 
 cd ${DRUPAL_DIR}
 wget -c -N http://ftp.drupal.org/files/projects/drupal-7.24.tar.gz
-
 wget -c -N http://download.pear.php.net/package/Console_Table-1.1.3.tgz
+#wget -c -N https://github.com/drush-ops/drush/archive/6.2.0.tar.gz
 
 cd ${DRUPAL_DIR}/modules
 for item in ${modules[*]}
