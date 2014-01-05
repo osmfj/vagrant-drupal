@@ -81,4 +81,7 @@ C9qKFcK2WALZITNiwqKIsd8ravYPBgRA/sZYAypXzLo3LP0ssv8qRVD9woL3Kh3o
 -----END PGP PUBLIC KEY BLOCK-----",
   }
 
+  exec {"apt-get install -y patch":
+    command => "/usr/bin/apt-get install -y patch"
+  }
 }

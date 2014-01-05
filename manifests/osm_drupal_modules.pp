@@ -1,6 +1,6 @@
 class osm_drupal_modules {
   import 'osm_drupal'
-  osm_drupal::drush_add{"drush-6.2.0": }
+  osm_drupal::drush_add{"drush-7.x-5.9": }
 
 # basic modules
   osm_drupal::module_add{"libraries": }

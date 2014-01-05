@@ -13,7 +13,7 @@ modules=(
   date-7.x-2.7.tar.gz \
   dhtml_menu-7.x-1.0-beta1.tar.gz \
   diff-7.x-3.2.tar.gz \
-  drush-6.2.0.tar.gz \
+  drush-7.x-5.9.tar.gz \
   entity-7.x-1.2.tar.gz \
   fbconnect-7.x-2.0-beta4.tar.gz \
   geofield-7.x-2.1.tar.gz \

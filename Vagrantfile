@@ -4,6 +4,8 @@
 Vagrant.configure("2") do |config|
   
   config.vm.box     = "precise64"
+  config.vm.network :private_network, ip:"192.168.123.10"
+  config.vm.hostname = "vagrant.example.com"
   
   config.vm.provider :kvm do |kvm,override|
       kvm.gui = true
@@ -26,6 +28,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provision :puppet do |puppet|
+      puppet.facter = { "fqdn" => "drupal.osmfj", "hostname" => "drupal" }
       puppet.manifests_path = "manifests"
       puppet.manifest_file  = "init.pp"
       puppet.module_path    = "modules"
