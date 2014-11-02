@@ -1,4 +1,4 @@
-class osm_drupal ($version = "7.24", $dest = "/opt/drupal7") {
+class osm_drupal ($version = "7.32", $dest = "/opt/drupal7") {
 
   $packages = ["php5-cli", "php5-gd", "php5-curl", "php5-mcrypt"]
 

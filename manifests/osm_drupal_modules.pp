@@ -23,15 +23,17 @@ class osm_drupal_modules {
   osm_drupal::module_add{"recaptcha": }
   osm_drupal::module_add{"google_analytics": }
   osm_drupal::module_add{"pathauto": }
+  osm_drupal::module_add{"views_bulk_operaions": }
+  osm_drupal::module_add{"rename_admin_path": }
+  osm_drupal::module_add{"mass_passoword_change": }
+  osm_drupal::module_add{"admin_views": }
 
 # UI improvement
   osm_drupal::module_add{"ckeditor": }
-  osm_drupal::module_add{"dhtml_menu": }
   osm_drupal::module_add{"diff": }
   osm_drupal::module_add{"message": }
 
 # Q&A forum
-  osm_drupal::module_add{"rate": }
   osm_drupal::module_add{"votingapi": }
 
 # GEO
@@ -56,8 +58,8 @@ class osm_drupal_modules {
 # SignOn
   osm_drupal::module_add{"fbconnect": }
   osm_drupal::module_add{"oauth": }
-  osm_drupal::module_add{"httprl": }
-  osm_drupal::module_add{"profile2": }
+  osm_drupal::module_add{"oauthloginprovider": }
+  osm_drupal::module_add{"services": }
   osm_drupal::module_add{"twitter": }
 
 # Search development
