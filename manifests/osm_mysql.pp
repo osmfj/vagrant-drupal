@@ -5,7 +5,7 @@ class osm_mysql (
   $password = 'drupal7'
 ){
 
-  $dependency = ["php5-mysql", "mysql-server-mroonga"]
+  $dependency = ["php5-mysql"]
 
   class { '::mysql::server':
     require => Exec['apt-get_update'],
@@ -45,7 +45,7 @@ socket   = /var/run/mysqld/mysqld.sock
 ",
   }
 
-  file { '/vagrant/files/drupal-data.sql':
+  file { '/vagrant/files/drupal-data.sql.bz2':
   audit => mtime,
   notify => Exec['restore-drupal-data']
  }
@@ -54,7 +54,7 @@ socket   = /var/run/mysqld/mysqld.sock
 
   exec { "restore-drupal-data":
       cwd      => "/home/${osm_mysql::workuser}",
-      command  => "/bin/bash -c \"$osm_mysql::mysql_command < /vagrant/files/drupal-data.sql\"",
+      command  => "/bin/bash -c \"bzcat /vagrant/files/drupal-data.sql.bz2 | $osm_mysql::mysql_command\"",
       subscribe => [Mysql_database["${osm_mysql::database}"], File["/home/vagrant/.my.cnf"]],
       refreshonly => true,
   }

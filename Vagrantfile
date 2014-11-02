@@ -23,8 +23,7 @@ chown root.root /etc/bash_completion.d/apt-fast
 APTPREPARE
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  
-  config.vm.box         = "ubuntu/trusty64"
+  config.vm.box     = "ubuntu/trusty64"
   config.vm.network :private_network, ip:"192.168.123.10"
   config.vm.synced_folder "./", "/vagrant", id: "vagrant-root"
 
@@ -58,13 +57,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     override.ssh.username = "ubuntu"
   end
 
+  config.vm.provision "shell", inline: $aptprepare, privileged: true
+  config.vm.provision "shell", path: "prepare.sh", privileged: true
   config.vm.provision :puppet do |puppet|
-      puppet.facter = { "fqdn" => "drupal.osmfj", "hostname" => "drupal" }
       puppet.manifests_path = "manifests"
       puppet.manifest_file  = "init.pp"
       puppet.module_path    = "modules"
   end
-
-  config.vm.provision "shell", inline: $aptprepare, privileged: true
-
 end

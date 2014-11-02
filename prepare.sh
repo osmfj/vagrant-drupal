@@ -1,6 +1,7 @@
 #! /bin/bash
 
-ROOT=`pwd`
+ROOT=/vagrant
+#ROOT=`pwd`
 DRUPAL_DIR=$ROOT/files/drupal
 modules=(
   admin_menu-7.x-3.0-rc4.tar.gz \
