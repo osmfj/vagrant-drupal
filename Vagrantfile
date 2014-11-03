@@ -20,6 +20,7 @@ chown root.root /usr/bin/apt-fast
 cp apt-fast/apt-fast.conf /etc/
 cp apt-fast/completions/bash/apt-fast /etc/bash_completion.d/
 chown root.root /etc/bash_completion.d/apt-fast
+apt-fast install -y puppet
 APTPREPARE
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -59,7 +60,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provision "shell", inline: $aptprepare, privileged: true
   config.vm.provision "shell", path: "prepare.sh", privileged: true
-  config.vm.provision "shell", inline: "apt-fast install -y puppet", privileged: true
   config.vm.provision :puppet do |puppet|
       puppet.manifests_path = "manifests"
       puppet.manifest_file  = "init.pp"

@@ -16,7 +16,7 @@ class my_repo inherits repo {
 
 node default {
   class { 'my_repo':}
-  class { 'osm_drupal': version  => '7.24', dest => '/opt/drupal7'}
+  class { 'osm_drupal': version  => '7.32', dest => '/opt/drupal7'}
   class { 'osm_drupal_modules':}
   class { 'osm_nginx':}
   class { 'osm_mysql': workuser => 'vagrant', database => 'drupal7',
