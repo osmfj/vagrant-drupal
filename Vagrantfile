@@ -9,6 +9,7 @@ VAGRANTFILE_API_VERSION = "2"
 
 # apt-fast 
 $aptprepare = <<APTPREPARE
+if [ ! -x /usr/bin/apt-fast ]; then
 apt-get update
 apt-get install -qq python-software-properties
 apt-get install -qq git aria2
@@ -21,6 +22,7 @@ cp apt-fast/apt-fast.conf /etc/
 cp apt-fast/completions/bash/apt-fast /etc/bash_completion.d/
 chown root.root /etc/bash_completion.d/apt-fast
 apt-fast install -y puppet
+fi
 APTPREPARE
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
