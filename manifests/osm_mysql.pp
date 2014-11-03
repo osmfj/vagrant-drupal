@@ -1,5 +1,5 @@
 class osm_mysql (
-  $workuser = 'vagrant',
+  $workuser = 'ubuntu',  #for aws,  pleaes change it for local vm to 'vagrant'
   $database = 'drupal7',
   $username = 'drupal7',
   $password = 'drupal7'
@@ -51,7 +51,7 @@ socket   = /var/run/mysqld/mysqld.sock
   exec { "restore-drupal-data":
       cwd      => "/home/${osm_mysql::workuser}",
       command  => "/bin/bash -c \"bzcat /vagrant/files/drupal-data.sql.bz2 | $osm_mysql::mysql_command\"",
-      subscribe => [Mysql_database["${osm_mysql::database}"], File["/home/vagrant/.my.cnf"]],
+      subscribe => [Mysql_database["${osm_mysql::database}"], File["/home/${osm_mysql::workuser}/.my.cnf"]],
       refreshonly => true,
   }
 }

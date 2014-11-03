@@ -24,8 +24,7 @@ class osm_drupal_modules {
   osm_drupal::module_add{"google_analytics": }
   osm_drupal::module_add{"pathauto": }
   osm_drupal::module_add{"views_bulk_operations": }
-  osm_drupal::module_add{"rename_admin_path": }
-  osm_drupal::module_add{"mass_passoword_change": }
+  osm_drupal::module_add{"rename_admin_paths": }
   osm_drupal::module_add{"admin_views": }
 
 # UI improvement
