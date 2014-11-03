@@ -8,6 +8,7 @@ class osm_mysql (
   $dependency = ["php5-mysql"]
 
   class { '::mysql::server':
+    root_password => 'drupal7',
     require => Exec['apt-get_update']
   }
   class { '::mysql::client':
