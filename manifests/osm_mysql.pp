@@ -8,12 +8,7 @@ class osm_mysql (
   $dependency = ["php5-mysql"]
 
   class { '::mysql::server':
-    require => Exec['apt-get_update'],
-    override_options => {
-      'mysqld' => {
-        'mroonga_default_parser' => 'TokenMecab'
-      }
-    }
+    require => Exec['apt-get_update']
   }
   class { '::mysql::client':
     require => Exec['apt-get_update']
@@ -58,17 +53,4 @@ socket   = /var/run/mysqld/mysqld.sock
       subscribe => [Mysql_database["${osm_mysql::database}"], File["/home/vagrant/.my.cnf"]],
       refreshonly => true,
   }
-
-  define mroonga-query ($tableName=$title) {
-    exec {"alter-mroonga-${tableName}":
-      cwd      => "/home/${osm_mysql::workuser}",
-      command  => "/bin/echo \"ALTER TABLE ${tableName} ENGINE=mroonga COMMENT='engine \"innodb\"' DEFAULT CHARSET utf8;\" | ${osm_mysql::mysql_command} --force",
-      unless => "/bin/echo 'SHOW CREATE TABLE ${tableName};' | ${osm_mysql::mysql_command} | grep -i -c 'mroonga'",
-      require   => Package["mysql-server-mroonga"],
-      subscribe => Exec["restore-drupal-data"],
-    }
-  }
-
-  # mroonga-query {"field_data_body":}
-  # mroonga-query {"field_data_comment":}
 }
